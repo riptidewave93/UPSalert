@@ -383,13 +383,6 @@ then
 		let PingLoopCount=0
 		while [ "$HostCount" -ne "$NumOfStorageHosts" ]
 		do
-			if [ "$PingLoopCount" -eq '20' ]
-			then
-				DebugPrint "Storage ${StorageHost[$HostCount]} failed to come online after 20 checks!"
-				DebugMessage="Storage ${StorageHost[$HostCount]} failed to come online after 20 ping checks, script will now terminate."
-				SendEmail 6
-				ScriptExit error
-			fi
 			if PingCheck ${StorageHost[$HostCount]}
 			then
 				DebugPrint "Node ${StorageHost[$HostCount]} is still offline. Pausing 2 seconds"
@@ -397,6 +390,14 @@ then
 				sleep 2
 			else
 				DebugPrint "Node ${StorageHost[$HostCount]} is Online! Continuing..."
+				let HostCount=$HostCount+1
+			fi
+			if [ "$PingLoopCount" -eq '20' ]
+			then
+				DebugPrint "Storage ${StorageHost[$HostCount]} failed to come online after 20 checks!"
+				DebugMessage="Storage ${StorageHost[$HostCount]} failed to come online after 20 ping checks, script will now sleep for 60 seconds then continue on."
+				SendEmail 6
+				sleep 60
 				let HostCount=$HostCount+1
 			fi
 		done
@@ -420,13 +421,6 @@ then
 		let PingLoopCount=0
 		while [ "$HostCount" -ne "$NumOfVMHosts" ]
 		do
-			if [ "$PingLoopCount" -eq '20' ]
-			then
-				DebugPrint "Node ${VMHost[$HostCount]} failed to come online after 20 checks!"
-				DebugMessage="Node ${VMHost[$HostCount]} failed to come online after 20 ping checks, script will now terminate."
-				SendEmail 6
-				ScriptExit error
-			fi
 			if PingCheck ${VMHost[$HostCount]}
 			then
 				DebugPrint "Node ${VMHost[$HostCount]} is still offline. Pausing 2 seconds"
@@ -434,6 +428,14 @@ then
 				sleep 2
 			else
 				DebugPrint "Node ${VMHost[$HostCount]} is Online! Continuing..."
+				let HostCount=$HostCount+1
+			fi
+			if [ "$PingLoopCount" -eq '20' ]
+			then
+				DebugPrint "Node ${VMHost[$HostCount]} failed to come online after 20 checks!"
+				DebugMessage="Node ${VMHost[$HostCount]} failed to come online after 20 ping checks, script will now terminate."
+				SendEmail 6
+				sleep 60
 				let HostCount=$HostCount+1
 			fi
 		done		
