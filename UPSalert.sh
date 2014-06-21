@@ -395,10 +395,10 @@ then
 			if [ "$PingLoopCount" -eq '20' ]
 			then
 				DebugPrint "Storage ${StorageHost[$HostCount]} failed to come online after 20 checks!"
-				DebugMessage="Storage ${StorageHost[$HostCount]} failed to come online after 20 ping checks, script will now sleep for 60 seconds then continue on."
+				DebugMessage="Storage ${StorageHost[$HostCount]} failed to come online after 20 ping checks, script will now sleep for 60 seconds then try again."
 				SendEmail 6
 				sleep 60
-				let HostCount=$HostCount+1
+				let PingLoopCount=0
 			fi
 		done
 		# NAS is Online, we can now bring up the nodes
@@ -433,12 +433,12 @@ then
 			if [ "$PingLoopCount" -eq '20' ]
 			then
 				DebugPrint "Node ${VMHost[$HostCount]} failed to come online after 20 checks!"
-				DebugMessage="Node ${VMHost[$HostCount]} failed to come online after 20 ping checks, script will now terminate."
+				DebugMessage="Node ${VMHost[$HostCount]} failed to come online after 20 ping checks, script will now sleep for 60 seconds then try again."
 				SendEmail 6
 				sleep 60
-				let HostCount=$HostCount+1
+				let PingLoopCount=0
 			fi
-		done		
+		done
 		# Things are live, remove offline file and send email
 		if ShutdownFile remove
 		then
